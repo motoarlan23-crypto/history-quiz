@@ -1,1 +1,136 @@
 
+
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Білім Quiz</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #15152b;
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
+.container {
+  max-width: 500px;
+  margin: 40px auto;
+  background: #252545;
+  padding: 25px;
+  border-radius: 20px;
+}
+h1 { color: #b9a5ff; }
+button {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  margin: 12px 0;
+  border: none;
+  border-radius: 12px;
+  font-size: 17px;
+  cursor: pointer;
+}
+.answer { background: #e8e2ff; color: #222; }
+#next, #start, #restart {
+  background: #8c6cff;
+  color: white;
+}
+#result { font-size: 22px; }
+</style>
+</head>
+<body>
+<div class="container">
+<h1>📚 БІЛІМ QUIZ</h1>
+<p>Әртүрлі пәндер бойынша біліміңді тексер!</p>
+<h3 id="number"></h3>
+<h2 id="question">Ойынды бастауға дайынсың ба?</h2>
+<div id="answers"></div>
+<p id="feedback"></p>
+<button id="start" onclick="startQuiz()">Ойынды бастау</button>
+<button id="next" onclick="nextQuestion()" style="display:none">Келесі сұрақ ➜</button>
+<h2 id="result"></h2>
+<button id="restart" onclick="startQuiz()" style="display:none">Қайта ойнау</button>
+</div>
+
+<script>
+const questions = [
+{q:"Қазақстан тәуелсіздігін қай жылы алды?",a:["1990","1991","1992","1993"],c:1},
+{q:"15 × 6 нешеге тең?",a:["80","85","90","95"],c:2},
+{q:"Зат есім қандай сұрақтарға жауап береді?",a:["Қандай?","Кім? Не?","Қайтті?","Қанша?"],c:1},
+{q:"Жердің табиғи серігі не?",a:["Күн","Марс","Ай","Шолпан"],c:2},
+{q:"Book сөзінің аудармасы қандай?",a:["Қалам","Дәптер","Кітап","Мектеп"],c:2},
+{q:"Адамның қанын айдайтын мүше?",a:["Өкпе","Жүрек","Асқазан","Бүйрек"],c:1},
+{q:"Судың химиялық формуласы?",a:["CO2","O2","H2O","NaCl"],c:2},
+{q:"Қазақстанның ұлттық валютасы?",a:["Рубль","Доллар","Теңге","Еуро"],c:2},
+{q:"1 сағатта неше минут бар?",a:["30","45","60","90"],c:2},
+{q:"Өсімдікке өсу үшін не қажет?",a:["Су мен жарық","Тек құм","Тек тас","Тек қараңғылық"],c:0}
+];
+
+let index = 0;
+let score = 0;
+let selected = false;
+
+function startQuiz() {
+ index = 0;
+ score = 0;
+ document.getElementById("start").style.display="none";
+ document.getElementById("restart").style.display="none";
+ document.getElementById("result").innerText="";
+ showQuestion();
+}
+
+function showQuestion() {
+ selected = false;
+ const q = questions[index];
+ document.getElementById("number").innerText =
+ "Сұрақ " + (index+1) + " / " + questions.length;
+ document.getElementById("question").innerText = q.q;
+ document.getElementById("feedback").innerText="";
+ document.getElementById("next").style.display="none";
+ const box = document.getElementById("answers");
+ box.innerHTML="";
+ q.a.forEach((answer,i)=>{
+  const btn=document.createElement("button");
+  btn.innerText=String.fromCharCode(65+i)+") "+answer;
+  btn.className="answer";
+  btn.onclick=()=>checkAnswer(i,btn);
+  box.appendChild(btn);
+ });
+}
+
+function checkAnswer(choice,btn) {
+ if(selected) return;
+ selected=true;
+ const correct=questions[index].c;
+ if(choice===correct) {
+  score++;
+  btn.style.background="#3bd68b";
+  document.getElementById("feedback").innerText="Дұрыс! 🎉";
+ } else {
+  btn.style.background="#ff6666";
+  document.getElementById("feedback").innerText=
+  "Қате! Дұрыс жауап: "+questions[index].a[correct];
+ }
+ document.getElementById("next").style.display="block";
+}
+
+function nextQuestion() {
+ index++;
+ if(index<questions.length) {
+  showQuestion();
+ } else {
+  document.getElementById("question").innerText="Ойын аяқталды!";
+  document.getElementById("answers").innerHTML="";
+  document.getElementById("number").innerText="";
+  document.getElementById("feedback").innerText="";
+  document.getElementById("next").style.display="none";
+  document.getElementById("result").innerText=
+  "Нәтиже: "+score+" / "+questions.length+" ⭐";
+  document.getElementById("restart").style.display="block";
+ }
+}
+</script>
+</body>
+</html>
